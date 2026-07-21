@@ -23,12 +23,27 @@ async function withStore<T>(mode: IDBTransactionMode, action: (store: IDBObjectS
   return new Promise<T>((resolve, reject) => {
     const transaction = database.transaction(STORE, mode);
     const request = action(transaction.objectStore(STORE));
-    request.onsuccess = () => resolve(request.result);
+    let result: T;
+    request.onsuccess = () => {
+      result = request.result;
+    };
     request.onerror = () => reject(request.error);
-    transaction.oncomplete = () => database.close();
-    transaction.onerror = () => reject(transaction.error);
+    transaction.oncomplete = () => {
+      database.close();
+      resolve(result);
+    };
+    transaction.onabort = () => {
+      database.close();
+      reject(transaction.error);
+    };
+    transaction.onerror = () => {
+      database.close();
+      reject(transaction.error);
+    };
   });
 }
+
+let pendingSave: Promise<void> = Promise.resolve();
 
 export async function loadState(): Promise<AppState> {
   const stored = await withStore<AppState | undefined>("readonly", (store) => store.get(STATE_KEY));
@@ -39,7 +54,11 @@ export async function loadState(): Promise<AppState> {
 }
 
 export async function saveState(state: AppState): Promise<void> {
-  await withStore<IDBValidKey>("readwrite", (store) => store.put(state, STATE_KEY));
+  const save = pendingSave.then(() =>
+    withStore<IDBValidKey>("readwrite", (store) => store.put(state, STATE_KEY)).then(() => undefined),
+  );
+  pendingSave = save.catch(() => undefined);
+  return save;
 }
 
 export function serializeState(state: AppState): string {

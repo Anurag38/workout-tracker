@@ -29,10 +29,25 @@ export function WorkoutScreen({ workout, history, restSeconds, focusExerciseId, 
   const [showFinish, setShowFinish] = useState(false);
   const [showExit, setShowExit] = useState(false);
   const focusRef = useRef<HTMLElement | null>(null);
+  const finishDialogRef = useRef<HTMLElement | null>(null);
+  const exitDialogRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     if (focusExerciseId) window.setTimeout(() => focusRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 80);
   }, [focusExerciseId]);
+
+  useEffect(() => {
+    const dialog = showFinish ? finishDialogRef.current : showExit ? exitDialogRef.current : null;
+    if (!dialog) return;
+    dialog.querySelector<HTMLElement>("button")?.focus();
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        showFinish ? setShowFinish(false) : setShowExit(false);
+      }
+    };
+    window.addEventListener("keydown", closeOnEscape);
+    return () => window.removeEventListener("keydown", closeOnEscape);
+  }, [showExit, showFinish]);
 
   const replaceExercise = (id: string, recipe: (exercise: WorkoutExercise) => WorkoutExercise) => {
     onChange({ ...workout, exercises: workout.exercises.map((exercise) => exercise.id === id ? recipe(exercise) : exercise) });
@@ -46,7 +61,10 @@ export function WorkoutScreen({ workout, history, restSeconds, focusExerciseId, 
   };
 
   const toggleComplete = (exerciseId: string, set: WorkoutSet) => {
-    if (!set.completed && (set.weight === null || set.reps === null || set.reps <= 0)) return;
+    if (!set.completed && (
+      set.weight === null || !Number.isFinite(set.weight) || set.weight < 0 ||
+      set.reps === null || !Number.isInteger(set.reps) || set.reps <= 0
+    )) return;
     updateSet(exerciseId, set.id, { completed: !set.completed, completedAt: !set.completed ? new Date().toISOString() : undefined });
     if (!set.completed) {
       setRestKey((key) => key + 1);
@@ -119,7 +137,7 @@ export function WorkoutScreen({ workout, history, restSeconds, focusExerciseId, 
                       step="0.5"
                       placeholder={definition?.equipment === "Bodyweight" ? "0" : "—"}
                       value={set.weight ?? ""}
-                      onChange={(event) => updateSet(exercise.id, set.id, { weight: event.target.value === "" ? null : Number(event.target.value), completed: false })}
+                      onChange={(event) => updateSet(exercise.id, set.id, { weight: event.target.value === "" ? null : Number(event.target.value), completed: false, completedAt: undefined })}
                       aria-label={`${definition?.name} set ${index + 1} weight in pounds`}
                     />
                     <input
@@ -129,7 +147,7 @@ export function WorkoutScreen({ workout, history, restSeconds, focusExerciseId, 
                       step="1"
                       placeholder="—"
                       value={set.reps ?? ""}
-                      onChange={(event) => updateSet(exercise.id, set.id, { reps: event.target.value === "" ? null : Number(event.target.value), completed: false })}
+                      onChange={(event) => updateSet(exercise.id, set.id, { reps: event.target.value === "" ? null : Number(event.target.value), completed: false, completedAt: undefined })}
                       aria-label={`${definition?.name} set ${index + 1} reps`}
                     />
                     <button className="complete-set-button" type="button" onClick={() => toggleComplete(exercise.id, set)} aria-pressed={set.completed} aria-label={`${set.completed ? "Unmark" : "Complete"} ${definition?.name} set ${index + 1}`}>✓</button>
@@ -151,7 +169,7 @@ export function WorkoutScreen({ workout, history, restSeconds, focusExerciseId, 
 
       {showFinish && (
         <div className="modal-backdrop centered-modal" role="presentation">
-          <section className="confirm-card" role="dialog" aria-modal="true" aria-labelledby="finish-title">
+          <section ref={finishDialogRef} className="confirm-card" role="dialog" aria-modal="true" aria-labelledby="finish-title">
             <span className="confirm-icon" aria-hidden="true">✓</span>
             <span className="eyebrow">WORKOUT COMPLETE</span>
             <h2 id="finish-title">Finish {workout.name}?</h2>
@@ -163,7 +181,7 @@ export function WorkoutScreen({ workout, history, restSeconds, focusExerciseId, 
       )}
       {showExit && (
         <div className="modal-backdrop centered-modal" role="presentation">
-          <section className="confirm-card" role="dialog" aria-modal="true" aria-labelledby="exit-title">
+          <section ref={exitDialogRef} className="confirm-card" role="dialog" aria-modal="true" aria-labelledby="exit-title">
             <span className="eyebrow">LEAVE WORKOUT</span>
             <h2 id="exit-title">Keep this session?</h2>
             <p>Your unfinished workout can stay on this phone so you can resume it later.</p>

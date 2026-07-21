@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { searchExercises } from "../data/exercises";
 import type { Equipment } from "../types";
 
@@ -16,6 +16,14 @@ export function ExercisePicker({ selectedIds, multi = false, title = "Add exerci
   const [query, setQuery] = useState("");
   const [equipment, setEquipment] = useState<Equipment | "All">("All");
   const results = useMemo(() => searchExercises(query, equipment), [equipment, query]);
+
+  useEffect(() => {
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", closeOnEscape);
+    return () => window.removeEventListener("keydown", closeOnEscape);
+  }, [onClose]);
 
   return (
     <div className="modal-backdrop" role="presentation" onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
