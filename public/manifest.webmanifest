@@ -1,0 +1,21 @@
+{
+  "name": "LiftLog Workout Tracker",
+  "short_name": "LiftLog",
+  "description": "A private, offline-first workout tracker.",
+  "id": ".",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#f5f2eb",
+  "theme_color": "#f5f2eb",
+  "categories": ["fitness", "health", "lifestyle"],
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

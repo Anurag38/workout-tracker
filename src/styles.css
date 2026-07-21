@@ -1,0 +1,6 @@
+:root { font-family: system-ui, sans-serif; color: #18332d; background: #f5f2eb; }
+* { box-sizing: border-box; }
+html, body, #root { min-height: 100%; margin: 0; }
+.app-shell { min-height: 100dvh; display: grid; place-items: center; }
+.empty-state { text-align: center; }
+.brand-mark { display: grid; width: 56px; height: 56px; margin: auto; place-items: center; border-radius: 16px; color: #f4e5ae; background: #18332d; font-weight: 800; }
