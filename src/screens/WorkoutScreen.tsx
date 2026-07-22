@@ -60,6 +60,13 @@ export function WorkoutScreen({ workout, history, restSeconds, focusExerciseId, 
     }));
   };
 
+  const removeSet = (exerciseId: string, setId: string) => {
+    replaceExercise(exerciseId, (exercise) => ({
+      ...exercise,
+      sets: exercise.sets.length > 1 ? exercise.sets.filter((set) => set.id !== setId) : exercise.sets,
+    }));
+  };
+
   const toggleComplete = (exerciseId: string, set: WorkoutSet) => {
     if (!set.completed && (
       set.weight === null || !Number.isFinite(set.weight) || set.weight < 0 ||
@@ -81,7 +88,7 @@ export function WorkoutScreen({ workout, history, restSeconds, focusExerciseId, 
 
   const addExercise = (exerciseId: string) => {
     if (workout.exercises.some((exercise) => exercise.exerciseId === exerciseId)) return;
-    onChange({ ...workout, exercises: [...workout.exercises, { id: createId("exercise"), exerciseId, sets: [blankSet(), blankSet(), blankSet()] }] });
+    onChange({ ...workout, exercises: [...workout.exercises, { id: createId("exercise"), exerciseId, sets: [blankSet()] }] });
     setPickerOpen(false);
   };
 
@@ -126,7 +133,7 @@ export function WorkoutScreen({ workout, history, restSeconds, focusExerciseId, 
                 {previousExercise && <button type="button" onClick={() => copyPrevious(exercise, previousExercise)}>Copy</button>}
               </div>
               <div className="sets-table">
-                <div className="set-header"><span>SET</span><span>WEIGHT (LB)</span><span>REPS</span><span>DONE</span></div>
+                <div className="set-header"><span>SET</span><span>WEIGHT (LB)</span><span>REPS</span><span>DONE</span><span aria-hidden="true" /></div>
                 {exercise.sets.map((set, index) => (
                   <div className={set.completed ? "set-row is-complete" : "set-row"} key={set.id}>
                     <span className="set-number">{index + 1}</span>
@@ -151,12 +158,20 @@ export function WorkoutScreen({ workout, history, restSeconds, focusExerciseId, 
                       aria-label={`${definition?.name} set ${index + 1} reps`}
                     />
                     <button className="complete-set-button" type="button" onClick={() => toggleComplete(exercise.id, set)} aria-pressed={set.completed} aria-label={`${set.completed ? "Unmark" : "Complete"} ${definition?.name} set ${index + 1}`}>✓</button>
+                    <button
+                      className="remove-set-button"
+                      type="button"
+                      onClick={() => removeSet(exercise.id, set.id)}
+                      disabled={exercise.sets.length === 1}
+                      aria-label={`Remove ${definition?.name} set ${index + 1}`}
+                      title={exercise.sets.length === 1 ? "Each exercise needs at least one set" : "Remove set"}
+                    >−</button>
                   </div>
                 ))}
               </div>
               <div className="exercise-card-actions">
                 <button type="button" onClick={() => replaceExercise(exercise.id, (current) => ({ ...current, sets: [...current.sets, blankSet()] }))}>+ Add set</button>
-                <button type="button" onClick={() => onChange({ ...workout, exercises: workout.exercises.filter((item) => item.id !== exercise.id) })}>Remove</button>
+                <button type="button" onClick={() => onChange({ ...workout, exercises: workout.exercises.filter((item) => item.id !== exercise.id) })}>Remove exercise</button>
               </div>
             </article>
           );

@@ -71,7 +71,6 @@ export function ExercisePicker({ selectedIds, multi = false, title = "Add exerci
                 onClick={() => onChoose(exercise.id)}
                 disabled={!multi && selected}
               >
-                <span className="exercise-glyph" aria-hidden="true">{exercise.name.slice(0, 1)}</span>
                 <span className="result-copy">
                   <strong>{exercise.name}</strong>
                   <small>{exercise.family} · {exercise.equipment}{exercise.angle ? ` · ${exercise.angle}` : ""}</small>

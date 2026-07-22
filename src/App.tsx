@@ -18,7 +18,7 @@ const blankSet = (): WorkoutSet => ({ id: createId("set"), weight: null, reps: n
 const workoutExercise = (exerciseId: string): WorkoutExercise => ({
   id: createId("exercise"),
   exerciseId,
-  sets: [blankSet(), blankSet(), blankSet()],
+  sets: [blankSet()],
 });
 
 function ChooseWorkout({ templates, activeWorkout, onBack, onChoose, onEmpty, onResume }: {
