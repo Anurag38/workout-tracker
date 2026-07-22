@@ -83,7 +83,7 @@ h1, h2, .stat-card > strong, .timer-copy strong { font-family: Georgia, "Times N
 .empty-panel p { margin-top: 3px; font-size: 11px; line-height: 1.4; }
 .empty-icon { display: grid; flex: 0 0 38px; height: 38px; place-items: center; border-radius: 50%; color: var(--green); background: #e8e8e6; font-size: 20px; }
 
-.bottom-nav { position: absolute; z-index: 20; right: 0; bottom: 0; left: 0; display: grid; grid-template-columns: repeat(4, 1fr); min-height: calc(76px + env(safe-area-inset-bottom)); padding: 8px 8px env(safe-area-inset-bottom); border-top: 1px solid rgb(205 205 202 / 85%); background: rgb(247 247 245 / 92%); backdrop-filter: blur(18px); }
+.bottom-nav { position: fixed; z-index: 20; right: max(0px, calc((100vw - 520px) / 2)); bottom: 0; left: max(0px, calc((100vw - 520px) / 2)); display: grid; grid-template-columns: repeat(4, 1fr); min-height: calc(76px + env(safe-area-inset-bottom)); padding: 8px 8px env(safe-area-inset-bottom); border-top: 1px solid rgb(205 205 202 / 85%); background: rgb(247 247 245 / 92%); backdrop-filter: blur(18px); }
 .nav-item { min-height: 58px; border: 0; border-radius: 13px; color: #8a918e; background: transparent; font-size: 10px; font-weight: 750; cursor: pointer; }
 .nav-item span { display: block; }
 .nav-item .nav-symbol { height: 28px; font-size: 20px; line-height: 26px; }
@@ -282,7 +282,7 @@ h1, h2, .stat-card > strong, .timer-copy strong { font-family: Georgia, "Times N
 
 @media (min-width: 600px) {
   .app-frame { margin: 22px 0; min-height: calc(100dvh - 44px); border-radius: 26px; }
-  .bottom-nav { border-radius: 0 0 26px 26px; }
+  .bottom-nav { bottom: 22px; border-radius: 0 0 26px 26px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
