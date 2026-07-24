@@ -1,5 +1,6 @@
 export type Equipment =
   | "Barbell"
+  | "EZ Bar"
   | "Dumbbell"
   | "Cable"
   | "Machine"

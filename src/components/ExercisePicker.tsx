@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { searchExercises } from "../data/exercises";
 import type { Equipment } from "../types";
 
-const FILTERS: Array<Equipment | "All"> = ["All", "Dumbbell", "Barbell", "Cable", "Machine", "Bodyweight"];
+const FILTERS: Array<Equipment | "All"> = ["All", "Dumbbell", "Barbell", "EZ Bar", "Cable", "Machine", "Bodyweight"];
 
 type ExercisePickerProps = {
   selectedIds: string[];

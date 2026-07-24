@@ -46,6 +46,8 @@ export const EXERCISES: Exercise[] = [
   { id: "reverse-pec-deck", name: "Reverse pec deck", family: "Rear delt fly", primaryMuscles: ["Shoulders", "Back"], equipment: "Machine" },
   { id: "face-pull", name: "Face pull", family: "Rear delt row", primaryMuscles: ["Shoulders", "Back"], equipment: "Cable" },
   { id: "barbell-curl", name: "Barbell curl", family: "Curl", primaryMuscles: ["Biceps"], equipment: "Barbell" },
+  { id: "ez-bar-curl", name: "EZ-bar curl", family: "Curl", primaryMuscles: ["Biceps"], equipment: "EZ Bar" },
+  { id: "ez-bar-reverse-curl", name: "EZ-bar reverse curl", family: "Reverse curl", primaryMuscles: ["Biceps", "Forearms"], equipment: "EZ Bar" },
   { id: "dumbbell-curl", name: "Dumbbell curl", family: "Curl", primaryMuscles: ["Biceps"], equipment: "Dumbbell" },
   { id: "hammer-curl", name: "Hammer curl", family: "Curl", primaryMuscles: ["Biceps"], equipment: "Dumbbell" },
   { id: "cable-curl", name: "Cable curl", family: "Curl", primaryMuscles: ["Biceps"], equipment: "Cable" },
