@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { searchExercises } from "../data/exercises";
 import type { Equipment } from "../types";
 
@@ -15,7 +15,12 @@ type ExercisePickerProps = {
 export function ExercisePicker({ selectedIds, multi = false, title = "Add exercise", onChoose, onClose }: ExercisePickerProps) {
   const [query, setQuery] = useState("");
   const [equipment, setEquipment] = useState<Equipment | "All">("All");
+  const resultsRef = useRef<HTMLDivElement>(null);
   const results = useMemo(() => searchExercises(query, equipment), [equipment, query]);
+
+  useEffect(() => {
+    if (resultsRef.current) resultsRef.current.scrollTop = 0;
+  }, [equipment, query]);
 
   useEffect(() => {
     const closeOnEscape = (event: KeyboardEvent) => {
@@ -60,7 +65,7 @@ export function ExercisePicker({ selectedIds, multi = false, title = "Add exerci
             </button>
           ))}
         </div>
-        <div className="exercise-results">
+        <div className="exercise-results" ref={resultsRef}>
           {results.map((exercise) => {
             const selected = selectedIds.includes(exercise.id);
             return (
